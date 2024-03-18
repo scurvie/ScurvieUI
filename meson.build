@@ -15,6 +15,7 @@ LibWindow = library('LibWindow',
 install_headers(
   'Libraries/LibWindow/Wayland/Connection.h',
   'Libraries/LibWindow/Wayland/Message.h',
+  'Libraries/LibWindow/Wayland/RingBuffer.hpp',
   subdir : 'LibWindow/Wayland' )
 pkg.generate(LibWindow)
 
