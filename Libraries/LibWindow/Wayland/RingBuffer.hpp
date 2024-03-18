@@ -12,12 +12,13 @@ namespace LibWindow::Wayland {
   template <typename T>
   class RingBuffer {
     private:
-      std::unique_ptr<T[]> m_buffer;
+      std::shared_ptr<T[]> m_buffer;
 
-      size_t m_head = 0;
-      size_t m_tail = 0;
+      size_t m_head;
+      size_t m_tail;
       size_t m_max_size;
     public:
+      RingBuffer();
       RingBuffer(size_t max_size);
       void enqueue(T item);
       T dequeue();
@@ -28,7 +29,17 @@ namespace LibWindow::Wayland {
   };
 
   template <typename T>
+  RingBuffer<T>::RingBuffer() {
+    this->m_head = 0;
+    this->m_tail = 0;
+    this->m_buffer = std::make_unique<T[]>(1024);
+    this->m_max_size = 1024;
+  }
+
+  template <typename T>
   RingBuffer<T>::RingBuffer(size_t max_size) {
+    this->m_head = 0;
+    this->m_tail = 0;
     this->m_buffer = std::make_unique<T[]>(max_size);
     this->m_max_size = max_size;
   }

@@ -6,6 +6,7 @@
 
 #include "Connection.h"
 #include "Message.h"
+#include "RingBuffer.hpp"
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -15,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <iostream>
 
 namespace LibWindow::Wayland {
   Connection::Connection() {
@@ -81,5 +83,21 @@ namespace LibWindow::Wayland {
     if (total_size != send(this->m_fd, data.data(), total_size, MSG_DONTWAIT)) {
       throw std::runtime_error("send() failed!");
     }
+  }
+
+  void Connection::recv_messages() {
+    uint32_t read_buf[1024] = {};
+    ssize_t read_bytes_signed = recv(this->m_fd, read_buf, sizeof(read_buf), 0);
+    if (read_bytes_signed == -1) {
+      throw std::runtime_error("recv() failed!");
+    }
+    size_t read_bytes = (size_t)read_bytes_signed;
+    for (int i = 0; i < read_bytes / sizeof(uint32_t); i++) {
+      this->m_ring.enqueue(read_buf[i]);
+    }
+  }
+
+  RingBuffer<uint32_t> Connection::ring() {
+    return this->m_ring;
   }
 }
