@@ -62,8 +62,8 @@ namespace LibWindow::Wayland {
 
     T item = this->m_buffer[this->m_head];
 
-    T nothing;
-    this->m_buffer[this->m_head] = nothing;
+    //T nothing;
+    //this->m_buffer[this->m_head] = nothing;
 
     this->m_head = (this->m_head + 1) % this->m_max_size;
 

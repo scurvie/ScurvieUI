@@ -91,8 +91,8 @@ namespace LibWindow::Wayland {
     if (read_bytes_signed == -1) {
       throw std::runtime_error("recv() failed!");
     }
-    size_t read_bytes = (size_t)read_bytes_signed;
-    for (int i = 0; i < read_bytes / sizeof(uint32_t); i++) {
+    size_t read_items = (size_t) (read_bytes_signed / sizeof(uint32_t));
+    for (size_t i = 0; i < read_items; i++) {
       this->m_ring.enqueue(read_buf[i]);
     }
   }
